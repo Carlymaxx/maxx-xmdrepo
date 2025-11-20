@@ -12,7 +12,52 @@
             justify-content: center;
             height: 100vh;
             background-color: #f4f4f4;
+        }<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MAXX-XMD Session Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    input, button { padding: 10px; font-size: 16px; margin: 5px; }
+    #result { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>MAXX-XMD Session Generator</h1>
+  <p>Enter your WhatsApp number (with country code)</p>
+  <input type="text" id="number" placeholder="e.g., 254712345678">
+  <button onclick="getSession()">Get MAXX Session ID</button>
+  <div id="result"></div>
+
+  <script>
+    async function getSession() {
+      const number = document.getElementById('number').value;
+      const result = document.getElementById('result');
+      result.textContent = "⏳ Sending session ID...";
+
+      try {
+        const res = await fetch("/generate-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ number })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          result.textContent = `✅ Session ID sent to ${number}! Code: ${data.code}`;
+        } else {
+          result.textContent = `❌ ${data.error}`;
         }
+      } catch (err) {
+        result.textContent = "❌ Server error, try again later.";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
+
         .container {
             background: #fff;
             padding: 30px;
