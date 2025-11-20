@@ -1,11 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>MAXX~XMD Session Generator</title>
+    <meta charset="UTF-8">
+    <title>MAXX-XMD Session Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            font-size: 16px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+        }
+        #response {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<h1>MAXX~XMD Session Generator</h1>
-<p>Scan the QR code from your terminal to generate a new WhatsApp session.</p>
+    <div class="container">
+        <h2>MAXX-XMD Session Generator</h2>
+        <input type="text" id="number" placeholder="Enter WhatsApp number (e.g., 2547XXXXXXX)" required />
+        <button onclick="generateSession()">Get MAXX Session ID</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        async function generateSession() {
+            const number = document.getElementById("number").value.trim();
+            const responseDiv = document.getElementById("response");
+
+            if (!number) {
+                responseDiv.innerText = "❌ Please enter a number.";
+                return;
+            }
+
+            try {
+                const res = await fetch("/generate-session", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ number })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    responseDiv.innerText = `✅ Session code sent to WhatsApp number ${number}`;
+                } else {
+                    responseDiv.innerText = `❌ Error: ${data.error || "Failed to generate session"}`;
+                }
+            } catch (err) {
+                console.error(err);
+                responseDiv.innerText = "❌ Something went wrong.";
+            }
+        }
+    </script>
 </body>
 </html>
